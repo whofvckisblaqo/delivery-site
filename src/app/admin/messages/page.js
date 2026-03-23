@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
-import AdminShell from '@/components/AdminShell'
+// REMOVED: AdminShell import
 import { useToast } from '@/components/ToastProvider'
 import {
   MessageSquare, Mail, Phone, Clock, X, Circle,
@@ -98,7 +98,8 @@ export default function MessagesPage() {
   }, [messages, searchQuery])
 
   return (
-    <AdminShell title="Messages">
+    // Replaced <AdminShell> with a simple <div> container
+    <div className="relative">
       {/* LOADING BAR AT TOP */}
       {isSending && (
         <div className="fixed top-0 left-0 right-0 h-1 z-[2000] overflow-hidden bg-[#0A1628]">
@@ -109,7 +110,7 @@ export default function MessagesPage() {
       <div className="flex flex-col gap-6">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <h2 className="text-white font-bold text-2xl font-[family-name:var(--font-syne)]">Messages</h2>
+          <h2 className="text-white font-bold text-2xl font-syne italic uppercase tracking-tight">Messages</h2>
           <div className="flex items-center gap-3">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={14} />
@@ -120,13 +121,20 @@ export default function MessagesPage() {
                 className="bg-[#0d1f3c] border border-[#1A3A6B] text-white text-xs pl-9 pr-4 py-2 rounded-xl outline-none focus:border-[#F97316] w-48 md:w-64"
               />
             </div>
-            <button onClick={() => setIsComposing(true)} className="bg-[#F97316] text-white text-xs font-bold px-4 py-2 rounded-xl flex items-center gap-2"><Plus size={14} /> Compose</button>
+            <button onClick={() => setIsComposing(true)} className="bg-[#F97316] text-white text-xs font-bold px-4 py-2 rounded-xl flex items-center gap-2 hover:scale-105 transition-all"><Plus size={14} /> Compose</button>
           </div>
         </div>
 
         {/* Message List */}
         <div className="grid gap-3">
-          {filteredMessages.map((msg) => (
+          {loading ? (
+             <div className="flex items-center justify-center py-20 text-slate-500 gap-2">
+                <Loader2 size={20} className="animate-spin text-orange-500" />
+                <span className="text-xs font-bold tracking-widest uppercase">Loading Mailbox...</span>
+             </div>
+          ) : filteredMessages.length === 0 ? (
+             <div className="text-center py-20 text-slate-600 italic">No messages found.</div>
+          ) : filteredMessages.map((msg) => (
             <div 
               key={msg.messageId} 
               onClick={() => setSelected(msg)} 
@@ -141,8 +149,7 @@ export default function MessagesPage() {
           ))}
         </div>
 
-        {/* ── MODALS: ONLY RENDERED IF STATE IS TRUE ── */}
-        
+        {/* --- MODALS --- */}
         {isComposing && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
             <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setIsComposing(false)} />
@@ -182,6 +189,6 @@ export default function MessagesPage() {
           </div>
         )}
       </div>
-    </AdminShell>
+    </div>
   )
 }

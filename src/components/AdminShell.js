@@ -1,36 +1,35 @@
-// File Path: src/components/AdminShell.js
 'use client'
-
-import AdminSidebar from './AdminSidebar' // Ensure this file also exists!
+import { useState } from 'react'
+import AdminSidebar from './AdminSidebar'
+import { Menu } from 'lucide-react'
 
 export default function AdminShell({ children }) {
+  const [isOpen, setIsOpen] = useState(false)
+
   return (
     <div className="flex min-h-screen bg-[#050B14]">
-      {/* Sidebar - Left side */}
-      <AdminSidebar />
-      
-      {/* Main Content - Right side */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="h-16 border-b border-white/5 bg-[#0A1628] flex items-center px-8 justify-between shrink-0">
-          <div className="flex items-center gap-4">
-            <h1 className="text-xl font-bold text-orange-500 font-syne">
-              FastDrop Express <span className="text-white/40 text-sm font-normal ml-2">Admin Panel</span>
-            </h1>
-          </div>
-          
-          <div className="flex items-center gap-4">
-            <div className="text-right hidden sm:block">
-              <p className="text-sm font-medium text-white">Main Admin</p>
-              <p className="text-xs text-white/40">super_admin</p>
-            </div>
-            <div className="w-10 h-10 rounded-full bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500 font-bold">
-              A
-            </div>
-          </div>
+      {/* SIDEBAR: lg:static makes it stay on the left on Desktop */}
+      <aside className={`
+        fixed inset-y-0 left-0 z-50 w-64 transition-transform duration-300
+        lg:static lg:translate-x-0 
+        ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+      `}>
+        <AdminSidebar onClose={() => setIsOpen(false)} />
+      </aside>
+
+      {/* MAIN CONTENT */}
+      <div className="flex-1 flex flex-col min-w-0 h-screen">
+        <header className="h-16 border-b border-white/5 bg-[#0A1628] flex items-center px-4 lg:px-8">
+          <button onClick={() => setIsOpen(true)} className="lg:hidden p-2 text-slate-400 mr-4">
+            <Menu size={24} />
+          </button>
+          <h1 className="text-orange-500 font-bold uppercase text-lg tracking-widest font-syne italic">FastDrop Admin</h1>
         </header>
 
-        <main className="flex-1 overflow-y-auto p-4 md:p-8 bg-[#050B14]">
-          {children}
+        <main className="flex-1 overflow-y-auto p-4 lg:p-10">
+          <div className="max-w-[1400px] mx-auto">
+            {children}
+          </div>
         </main>
       </div>
     </div>

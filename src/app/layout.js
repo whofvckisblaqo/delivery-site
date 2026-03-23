@@ -25,26 +25,39 @@ export default function RootLayout({ children }) {
   const pathname = usePathname()
   
   // Logic to hide site elements when you are in the Admin Panel
+  // This prevents the "Two Navs" problem on mobile
   const isAdmin = pathname?.startsWith('/admin')
 
   return (
-    <html lang="en">
-      <body className={`${syne.variable} ${inter.variable} bg-[#0A1628] text-white flex flex-col min-h-screen`}>
+    <html lang="en" className="dark">
+      <body className={`${syne.variable} ${inter.variable} bg-[#0A1628] text-white antialiased`}>
         <ToastProvider>
           <LoadingScreen />
           
-          {/* Only show Navbar/Footer/Chat to regular users */}
+          {/* 1. Only show Public Navbar if NOT in admin */}
           {!isAdmin && <Navbar />}
           
-          <main className="flex-1">
-            {children}
-          </main>
+          {/* 2. On Admin pages, we remove the 'flex-1' main wrapper 
+              to allow the AdminSidebar to sit side-by-side correctly.
+          */}
+          {isAdmin ? (
+            <div className="min-h-screen">
+              {children}
+            </div>
+          ) : (
+            <main className="flex-1 flex flex-col min-h-screen">
+              {children}
+            </main>
+          )}
           
-          {!isAdmin && <Footer />}
-          {!isAdmin && <ScrollToTop />}
-          
-          {/* THE CHAT BUBBLE IS NOW LIVE HERE */}
-          {!isAdmin && <SupportChat />}
+          {/* 3. Hide all public footers/chat when in Admin */}
+          {!isAdmin && (
+            <>
+              <Footer />
+              <ScrollToTop />
+              <SupportChat />
+            </>
+          )}
           
         </ToastProvider>
       </body>
