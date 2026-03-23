@@ -7,80 +7,66 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ─── ORDERS TABLE ─────────────────────────────────────────────────────────────
-// Stores every delivery order created by admin
-// orderId is the tracking code customer uses e.g. FD847392
 model Order {
   id            Int      @id @default(autoincrement())
-  orderId       String   @unique                     // Tracking code like FD847392
-  customer      String                               // Receiver full name
-  phone         String?                              // Receiver phone number
-  fromLocation  String                               // Pickup address
-  toLocation    String                               // Destination address
-  service       String                               // Same-Day, Express, Scheduled
-  status        String   @default("Pending")         // Current delivery status
-  amount        String                               // Price like $25.00
-  date          String                               // Readable date like "Jan 15, 2:45 PM"
-  customerEmail String?                              // Email for notifications
-  description   String?  @db.Text                   // Order notes or special instructions
+  orderId       String   @unique
+  customer      String
+  phone         String?
+  fromLocation  String
+  toLocation    String
+  service       String
+  status        String   @default("Pending")
+  amount        String
+  date          String
+  customerEmail String?
+  description   String?  @db.Text
   createdAt     DateTime @default(now())
 }
 
-// ─── CUSTOMERS TABLE ──────────────────────────────────────────────────────────
-// Stores all registered customers
 model Customer {
   id         Int      @id @default(autoincrement())
-  customerId String   @unique                        // Like C001
-  name       String                                  // Full name
-  email      String   @unique                        // Must be unique per customer
-  phone      String?                                 // Optional phone
-  city       String?                                 // City like "New York, NY"
-  orders     Int      @default(0)                    // Total orders placed
-  spent      String   @default("$0.00")              // Total amount spent
-  joined     String                                  // Like "Jan 2024"
-  status     String   @default("Active")             // Active or Inactive
+  customerId String   @unique
+  name       String
+  email      String   @unique
+  phone      String?
+  city       String?
+  orders     Int      @default(0)
+  spent      String   @default("$0.00")
+  joined     String
+  status     String   @default("Active")
   createdAt  DateTime @default(now())
 }
 
-// ─── TRACKING TABLE ───────────────────────────────────────────────────────────
-// Stores live tracking data for each order
-// This is what updates when admin changes status
-// This is what the public /tracking page reads from
 model Tracking {
   id            Int      @id @default(autoincrement())
-  orderId       String   @unique                     // Links to Order.orderId
-  customer      String                               // Customer name shown on tracking page
-  customerEmail String?                              // Email for status notifications
-  fromLocation  String                               // Pickup location
-  toLocation    String                               // Delivery location
-  status        String   @default("Pending")         // Current status
-  estimate      String?                              // ETA like "Today by 4:00 PM"
-  driver        String?                              // Driver name when assigned
-  steps         Json                                 // JSON array of 5 timeline steps
+  orderId       String   @unique
+  customer      String
+  customerEmail String?
+  fromLocation  String
+  toLocation    String
+  status        String   @default("Pending")
+  estimate      String?
+  driver        String?
+  steps         Json
   createdAt     DateTime @default(now())
 }
 
-// ─── MESSAGES TABLE ───────────────────────────────────────────────────────────
-// Stores contact form submissions from the website
 model Message {
   id        Int      @id @default(autoincrement())
-  messageId String   @unique                         // Like M001 or M1234567890
-  name      String                                   // Sender name
-  email     String                                   // Sender email
-  phone     String?                                  // Optional phone
-  subject   String?                                  // Subject like "Get a Quote"
-  message   String   @db.Text                        // Full message body
-  read      Boolean  @default(false)                 // Has admin opened it
-  time      String                                   // Readable time like "Jan 15, 2:45 PM"
+  messageId String   @unique
+  name      String
+  email     String
+  phone     String?
+  subject   String?
+  message   String   @db.Text
+  read      Boolean  @default(false)
+  time      String
   createdAt DateTime @default(now())
 }
 
-// ─── ADMIN TABLE ──────────────────────────────────────────────────────────────
-// Stores admin login credentials
-// Only one admin for now
 model Admin {
   id        Int      @id @default(autoincrement())
-  username  String   @unique                         // Admin username
-  password  String                                   // Password — hash with bcrypt later
+  username  String   @unique
+  password  String
   createdAt DateTime @default(now())
 }
