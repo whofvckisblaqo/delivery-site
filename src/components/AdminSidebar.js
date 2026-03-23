@@ -23,9 +23,15 @@ const navItems = [
 export default function AdminSidebar({ onClose }) {
   const pathname = usePathname()
 
+  // Helper to handle clicks safely
+  const handleItemClick = () => {
+    if (onClose && typeof onClose === 'function') {
+      onClose();
+    }
+  }
+
   return (
-    /* h-full and justify-between ensures the bottom section is pinned to the floor */
-    <div className="flex flex-col h-full bg-[#0d1f3c] justify-between">
+    <div className="flex flex-col h-full bg-[#0d1f3c] justify-between border-r border-white/5 w-64">
       
       {/* --- TOP SECTION --- */}
       <div>
@@ -45,7 +51,7 @@ export default function AdminSidebar({ onClose }) {
               <Link
                 key={item.href}
                 href={item.href}
-                onClick={onClose}
+                onClick={handleItemClick}
                 className={`flex items-center gap-4 px-4 py-3 rounded-xl font-bold text-sm transition-all ${
                   active 
                   ? 'bg-[#F97316] text-white shadow-lg shadow-orange-500/20' 
@@ -60,20 +66,17 @@ export default function AdminSidebar({ onClose }) {
         </nav>
       </div>
 
-      {/* --- BOTTOM SECTION (Pinned to bottom) --- */}
+      {/* --- BOTTOM SECTION --- */}
       <div className="p-4 border-t border-[#1A3A6B]/20 space-y-1">
-        
-        {/* Settings Link */}
         <Link 
           href="/admin/settings" 
-          onClick={onClose}
+          onClick={handleItemClick}
           className="flex items-center gap-4 px-4 py-3 rounded-xl font-bold text-sm text-slate-500 hover:text-white hover:bg-[#1A3A6B]/40 transition-all"
         >
           <Settings size={20} />
           Settings
         </Link>
 
-        {/* View Website */}
         <Link 
           href="/" 
           className="flex items-center gap-4 px-4 py-3 rounded-xl font-bold text-sm text-slate-500 hover:text-white hover:bg-[#1A3A6B]/40 transition-all"
@@ -82,7 +85,6 @@ export default function AdminSidebar({ onClose }) {
           View Website
         </Link>
 
-        {/* Logout */}
         <button 
           onClick={() => {
             localStorage.removeItem('fastdropexpress_admin')
@@ -94,7 +96,6 @@ export default function AdminSidebar({ onClose }) {
           Logout
         </button>
       </div>
-
     </div>
   )
 }
