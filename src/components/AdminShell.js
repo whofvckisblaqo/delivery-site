@@ -3,75 +3,62 @@
 import { useState } from 'react'
 import AdminSidebar from './AdminSidebar'
 import AdminGuard from './AdminGuard'
-import { Menu, Bell, Search } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
 
 export default function AdminShell({ children, title }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   return (
     <AdminGuard>
-      <div className="min-h-screen bg-[#0A1628] flex">
-
-        {/* Sidebar — desktop */}
-        <div className="hidden lg:flex lg:w-64 lg:shrink-0 lg:flex-col">
-          <div className="fixed top-0 left-0 h-full w-64">
-            <AdminSidebar />
-          </div>
-        </div>
-
-        {/* Sidebar — mobile overlay */}
+      <div className="flex min-h-screen bg-[#0A1628] text-white overflow-hidden">
+        
+        {/* --- MOBILE SIDEBAR (Drawer) --- */}
         {sidebarOpen && (
-          <div className="fixed inset-0 z-50 flex lg:hidden">
-            <div
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-              onClick={() => setSidebarOpen(false)}
-            />
-            <div className="relative w-64 h-full z-10">
-              <AdminSidebar onClose={() => setSidebarOpen(false)} />
+          <div className="fixed inset-0 z-[100] lg:hidden">
+            <div className="absolute inset-0 bg-black/80" onClick={() => setSidebarOpen(false)} />
+            <div className="relative w-64 h-full bg-[#0d1f3c] border-r border-[#1A3A6B]/60">
+               <button 
+                 onClick={() => setSidebarOpen(false)} 
+                 className="absolute top-4 right-[-45px] p-2 bg-[#F97316] text-white rounded-lg"
+               >
+                 <X size={20} />
+               </button>
+               <AdminSidebar onClose={() => setSidebarOpen(false)} />
             </div>
           </div>
         )}
 
-        {/* Main content */}
-        <div className="flex-1 flex flex-col min-w-0 lg:ml-64">
+        {/* --- DESKTOP SIDEBAR (The Fix) --- */}
+        {/* We use 'w-64' and 'shrink-0' to ensure it never disappears */}
+        <aside className="hidden lg:flex w-64 shrink-0 flex-col bg-[#0d1f3c] border-r border-[#1A3A6B]/60 h-screen sticky top-0">
+          <AdminSidebar />
+        </aside>
 
-          {/* Top bar */}
-          <header className="sticky top-0 z-40 bg-[#0A1628]/95 backdrop-blur-md border-b border-[#1A3A6B]/60 px-6 py-4 flex items-center justify-between gap-4">
+        {/* --- MAIN CONTENT (The Rest) --- */}
+        <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+          
+          {/* Header */}
+          <header className="h-16 border-b border-[#1A3A6B]/60 flex items-center justify-between px-6 bg-[#0A1628] shrink-0">
             <div className="flex items-center gap-4">
-              {/* Mobile menu button */}
-              <button
-                onClick={() => setSidebarOpen(true)}
-                className="lg:hidden text-slate-400 hover:text-white transition-colors"
+              <button 
+                onClick={() => setSidebarOpen(true)} 
+                className="lg:hidden p-2 text-slate-400 hover:text-white"
               >
-                <Menu size={22} />
+                <Menu size={24} />
               </button>
-              <h1 className="font-[family-name:var(--font-syne)] text-white font-bold text-lg">
-                {title}
-              </h1>
+              <h1 className="font-bold text-lg uppercase tracking-wider">{title}</h1>
             </div>
-
-            <div className="flex items-center gap-3">
-              {/* Search */}
-              <button className="w-9 h-9 rounded-xl bg-[#0d1f3c] border border-[#1A3A6B]/60 flex items-center justify-center text-slate-400 hover:text-white hover:border-[#F97316]/40 transition-all duration-200">
-                <Search size={16} />
-              </button>
-              {/* Notifications */}
-              <button className="relative w-9 h-9 rounded-xl bg-[#0d1f3c] border border-[#1A3A6B]/60 flex items-center justify-center text-slate-400 hover:text-white hover:border-[#F97316]/40 transition-all duration-200">
-                <Bell size={16} />
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#F97316] rounded-full" />
-              </button>
-              {/* Avatar */}
-              <div className="w-9 h-9 rounded-xl bg-[#F97316] flex items-center justify-center text-white text-xs font-bold">
-                AD
-              </div>
+            <div className="w-9 h-9 rounded-xl bg-[#F97316] flex items-center justify-center font-bold text-xs shadow-lg shadow-orange-500/20">
+              AD
             </div>
           </header>
 
-          {/* Page content */}
-          <main className="flex-1 p-6">
+          {/* Page Body */}
+          <main className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
             {children}
           </main>
         </div>
+
       </div>
     </AdminGuard>
   )

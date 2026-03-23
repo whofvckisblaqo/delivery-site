@@ -21,7 +21,7 @@ const contactInfo = [
   {
     icon: Mail,
     title: 'Email Us',
-    detail: 'hello@fastdropexpress.com',
+    detail: 'fastsdropexpress@gmail.com',
     sub: 'We reply within 2 hours',
   },
   {

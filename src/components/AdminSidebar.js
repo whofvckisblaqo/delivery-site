@@ -1,105 +1,100 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
-import {
-  Truck,
-  LayoutDashboard,
-  PackageCheck,
-  Users,
-  MapPin,
-  MessageSquare,
-  LogOut,
-  X,
+import { usePathname } from 'next/navigation'
+import { 
+  LayoutDashboard, 
+  Package, 
+  MapPin, 
+  MessageSquare, 
+  Truck, 
+  LogOut, 
+  Settings, 
+  ExternalLink 
 } from 'lucide-react'
 
 const navItems = [
-  { label: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
-  { label: 'Orders', href: '/admin/orders', icon: PackageCheck },
-  { label: 'Customers', href: '/admin/customers', icon: Users },
-  { label: 'Tracking', href: '/admin/tracking', icon: MapPin },
-  { label: 'Messages', href: '/admin/messages', icon: MessageSquare },
+  { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
+  { name: 'Orders', href: '/admin/orders', icon: Package },
+  { name: 'Tracking', href: '/admin/tracking', icon: MapPin },
+  { name: 'Messages', href: '/admin/messages', icon: MessageSquare },
 ]
 
 export default function AdminSidebar({ onClose }) {
   const pathname = usePathname()
-  const router = useRouter()
-
-  function handleLogout() {
-    localStorage.removeItem('fastdropexpress_admin')
-    router.push('/admin')
-  }
 
   return (
-    <aside className="h-full bg-[#060e1a] border-r border-[#1A3A6B]/60 flex flex-col">
+    /* h-full and justify-between ensures the bottom section is pinned to the floor */
+    <div className="flex flex-col h-full bg-[#0d1f3c] justify-between">
+      
+      {/* --- TOP SECTION --- */}
+      <div>
+        {/* Branding */}
+        <div className="p-6 mb-4 flex items-center gap-3 border-b border-[#1A3A6B]/20">
+          <div className="p-2 bg-[#F97316]/10 rounded-lg">
+            <Truck size={24} className="text-[#F97316]" />
+          </div>
+          <span className="font-black text-xl tracking-tight text-white">FASTDROP</span>
+        </div>
 
-      {/* Logo */}
-      <div className="px-6 py-6 flex items-center justify-between border-b border-[#1A3A6B]/40">
-        <Link href="/admin/dashboard" className="flex items-center gap-2 group">
-          <Truck
-            size={24}
-            className="text-[#F97316] transition-transform duration-300 group-hover:scale-110"
-          />
-          <span className="font-[family-name:var(--font-syne)] text-lg font-extrabold text-white">
-            FastDrop<span className="text-[#F97316]">Express</span>
-          </span>
-        </Link>
-        {onClose && (
-          <button
-            onClick={onClose}
-            className="lg:hidden text-slate-400 hover:text-white transition-colors"
-          >
-            <X size={20} />
-          </button>
-        )}
-      </div>
-
-      {/* Nav Links */}
-      <nav className="flex-1 px-4 py-6 flex flex-col gap-1 overflow-y-auto">
-        <p className="text-slate-600 text-xs uppercase tracking-widest px-3 mb-3">
-          Main Menu
-        </p>
-        {navItems.map(({ label, href, icon: Icon }) => {
-          const isActive = pathname === href
-          return (
-            <Link
-              key={href}
-              href={href}
-              onClick={onClose}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group ${
-                isActive
-                  ? 'bg-[#F97316] text-white shadow-lg shadow-orange-500/20'
-                  : 'text-slate-400 hover:text-white hover:bg-[#1A3A6B]/50'
-              }`}
-            >
-              <Icon
-                size={18}
-                className={`transition-transform duration-200 ${
-                  isActive ? 'text-white' : 'group-hover:scale-110'
+        {/* Links */}
+        <nav className="px-4 space-y-1">
+          {navItems.map((item) => {
+            const active = pathname === item.href
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={onClose}
+                className={`flex items-center gap-4 px-4 py-3 rounded-xl font-bold text-sm transition-all ${
+                  active 
+                  ? 'bg-[#F97316] text-white shadow-lg shadow-orange-500/20' 
+                  : 'text-slate-500 hover:text-white hover:bg-[#1A3A6B]/40'
                 }`}
-              />
-              {label}
-              {isActive && (
-                <span className="ml-auto w-1.5 h-1.5 bg-white rounded-full" />
-              )}
-            </Link>
-          )
-        })}
-      </nav>
-
-      {/* Logout */}
-      <div className="px-4 py-6 border-t border-[#1A3A6B]/40">
-        <button
-          onClick={handleLogout}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200 group"
-        >
-          <LogOut size={18} className="transition-transform duration-200 group-hover:scale-110" />
-          Sign Out
-        </button>
-        <p className="text-slate-600 text-xs text-center mt-4">
-          FastDropExpress Admin v1.0
-        </p>
+              >
+                <item.icon size={20} />
+                {item.name}
+              </Link>
+            )
+          })}
+        </nav>
       </div>
-    </aside>
+
+      {/* --- BOTTOM SECTION (Pinned to bottom) --- */}
+      <div className="p-4 border-t border-[#1A3A6B]/20 space-y-1">
+        
+        {/* Settings Link */}
+        <Link 
+          href="/admin/settings" 
+          onClick={onClose}
+          className="flex items-center gap-4 px-4 py-3 rounded-xl font-bold text-sm text-slate-500 hover:text-white hover:bg-[#1A3A6B]/40 transition-all"
+        >
+          <Settings size={20} />
+          Settings
+        </Link>
+
+        {/* View Website */}
+        <Link 
+          href="/" 
+          className="flex items-center gap-4 px-4 py-3 rounded-xl font-bold text-sm text-slate-500 hover:text-white hover:bg-[#1A3A6B]/40 transition-all"
+        >
+          <ExternalLink size={20} />
+          View Website
+        </Link>
+
+        {/* Logout */}
+        <button 
+          onClick={() => {
+            localStorage.removeItem('fastdropexpress_admin')
+            window.location.href = '/admin'
+          }}
+          className="w-full flex items-center gap-4 px-4 py-3 rounded-xl font-bold text-sm text-red-500/60 hover:text-red-500 hover:bg-red-500/5 transition-all"
+        >
+          <LogOut size={20} />
+          Logout
+        </button>
+      </div>
+
+    </div>
   )
 }
