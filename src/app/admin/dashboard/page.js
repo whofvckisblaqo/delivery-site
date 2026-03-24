@@ -33,7 +33,7 @@ export default function DashboardPage() {
 
   const liveStats = [
     { icon: PackageCheck, label: 'Total Orders', value: data?.totalOrders || 0, change: 'Live from DB', positive: true },
-    { icon: TrendingUp, label: 'Revenue', value: `₦${(data?.totalRevenue || 0).toLocaleString()}`, change: 'Total value', positive: true },
+    { icon: TrendingUp, label: 'Revenue', value: `$${(data?.totalRevenue || 0).toLocaleString()}`, change: 'Total value', positive: true },
     { icon: MessageSquare, label: 'New Messages', value: data?.totalMessages || 0, change: 'Unread', positive: false },
     { icon: Users, label: 'Customers', value: data?.totalOrders || 0, change: 'Unique leads', positive: true },
   ]
