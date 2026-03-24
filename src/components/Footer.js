@@ -97,7 +97,7 @@ export default function Footer() {
           <ul className="flex flex-col gap-3">
             {[
               { icon: Phone, text: '+1 (800) 327-8376' },
-              { icon: Mail, text: 'hello@fastdropexpress.com' },
+              { icon: Mail, text: 'fastsdropexpress@gmail.com' },
               { icon: MapPin, text: '123 Express Ave, New York, NY' },
             ].map(({ icon: Icon, text }, i) => (
               <li key={i} className="flex items-start gap-3 group">
