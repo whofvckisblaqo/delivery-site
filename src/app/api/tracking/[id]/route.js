@@ -1,32 +1,24 @@
 import { NextResponse } from 'next/server'
-import prisma from '@/lib/prisma'
+import connectDB from '@/lib/mongodb'
+import Tracking from '@/lib/models/Tracking'
 
 export async function GET(request, context) {
   try {
-    // Await params — required in newer Next.js versions
+    await connectDB()
     const params = await context.params
     const id     = params?.id
 
-    if (!id) {
-      return NextResponse.json({ error: 'ID required' }, { status: 400 })
-    }
+    if (!id) return NextResponse.json({ error: 'ID required' }, { status: 400 })
 
-    const cleanId = id.replace('#', '').trim().toUpperCase()
-
-    const record = await prisma.tracking.findUnique({
-      where: { orderId: cleanId },
+    const record = await Tracking.findOne({
+      orderId: id.replace('#', '').trim().toUpperCase()
     })
 
-    if (!record) {
-      return NextResponse.json({ error: 'Order not found' }, { status: 404 })
-    }
+    if (!record) return NextResponse.json({ error: 'Order not found' }, { status: 404 })
 
     const statusStep = {
-      'Pending':          0,
-      'Picked Up':        1,
-      'In Transit':       2,
-      'Out for Delivery': 3,
-      'Delivered':        4,
+      'Pending': 0, 'Picked Up': 1, 'In Transit': 2,
+      'Out for Delivery': 3, 'Delivered': 4,
     }
 
     const currentIndex = statusStep[record.status] ?? 0
@@ -53,7 +45,6 @@ export async function GET(request, context) {
       driver:       record.driver   || '',
       steps,
     })
-
   } catch (err) {
     console.error('Tracking GET error:', err)
     return NextResponse.json({ error: err.message }, { status: 500 })
